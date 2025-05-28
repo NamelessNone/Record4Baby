@@ -39,7 +39,7 @@ def log_event(event_name: event_type, vol: int=0):
             },
             "Date": {
                 "type": "date",
-                "date": { "start": now }
+                "date": { "start": now , "time_zone": "Asia/Shanghai"}
             }
     }
     if event_name is event_type.bottle:
