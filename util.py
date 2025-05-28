@@ -16,6 +16,9 @@ class event_type(Enum):
     herb="药膏"
     oil="涂油"
     walk="遛"
+    diaper="纸尿裤"
+    pad="隔尿垫"
+
 
 def load_config(filename="config.toml"):
     script_dir=os.path.dirname(os.path.abspath(__file__))

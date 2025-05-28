@@ -47,3 +47,5 @@ icon下面的图标可以配置到按钮上，Stream Deck好用！
 + 药膏
 + 涂油
 + 遛
+
+Date的时区现在是UTC+0，找找文档property中该加什么
