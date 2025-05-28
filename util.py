@@ -5,17 +5,17 @@ from enum import Enum
 import os
 
 class event_type(Enum):
-    bottle=0
-    breast=1
-    stool=2
-    piss=3
-
-alias_map={
-    event_type.bottle:"奶瓶",
-    event_type.breast:"母乳",
-    event_type.stool:"大便",
-    event_type.piss:"小便"
-}
+    null="无效事件"
+    bottle="奶瓶"
+    breast="母乳"
+    poop="大便"
+    piss="小便"
+    exercises="做操"
+    sleep="睡眠"
+    finish="完成"
+    herb="药膏"
+    oil="涂油"
+    walk="遛"
 
 def load_config(filename="config.toml"):
     script_dir=os.path.dirname(os.path.abspath(__file__))
@@ -32,7 +32,7 @@ def log_event(event_name: event_type, vol: int=0):
     build_prop={
             "Name": {
                 "type": "title",
-                "title": [{ "type": "text", "text": { "content": alias_map[event_name] } }]
+                "title": [{ "type": "text", "text": { "content": event_name.value } }]
             },
             "Date": {
                 "type": "date",
