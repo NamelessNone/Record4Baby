@@ -31,35 +31,44 @@ def load_config(filename="config.toml"):
 
 def bring_notion_front():
     target_process_name = "Notion.exe"
-    notion_hwnd = None
+    notion_hwnd = []
+    
     # 遍历所有窗口
     def enum_windows_callback(hwnd, _):
         nonlocal notion_hwnd
-        try:
-            _, pid = win32process.GetWindowThreadProcessId(hwnd)
-            proc = psutil.Process(pid)
-            if proc.name() == target_process_name:
-                # 确保是可见窗口
-                if win32gui.IsWindowVisible(hwnd) and win32gui.GetWindowText(hwnd):
-                    notion_hwnd = hwnd
-                    return False  # 停止遍历
-        except Exception:
-            pass
-        return True
-    win32gui.EnumWindows(enum_windows_callback, None)
+        if win32gui.IsWindowVisible(hwnd):
+            title = win32gui.GetWindowText(hwnd)
+            if title.strip():
+                try:
+                    _, pid = win32process.GetWindowThreadProcessId(hwnd)
+                    proc = psutil.Process(pid)
+                    if(proc.name()== target_process_name):
+                        print(f"[窗口标题] {title} | [进程名] {proc.name()} | hwnd: {hwnd}")
+                        notion_hwnd.append(hwnd)
+                except Exception as e:
+                    print(f"无法获取进程信息: {e}")
+            return True
 
-    if notion_hwnd:
-        # 恢复窗口、激活并置顶
-        win32gui.ShowWindow(notion_hwnd, win32con.SW_RESTORE)
-        win32gui.SetForegroundWindow(notion_hwnd)
-        win32gui.SetWindowPos(notion_hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0,
+    win32gui.EnumWindows(enum_windows_callback, None)
+    # try:
+    #     win32gui.EnumWindows(enum_windows_callback, None)
+    # except Exception as e:
+    #     print(f"[错误] EnumWindows 失败：{e}")
+    #     return
+
+    if len(notion_hwnd)>0:
+        found_hwnd=notion_hwnd[0]
+        # 恢复、激活并置顶
+        win32gui.ShowWindow(found_hwnd, win32con.SW_RESTORE)
+        win32gui.SetForegroundWindow(found_hwnd)
+        win32gui.SetWindowPos(found_hwnd, win32con.HWND_TOPMOST, 0, 0, 0, 0,
                               win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
         time.sleep(0.2)
-        win32gui.SetWindowPos(notion_hwnd, win32con.HWND_NOTOPMOST, 0, 0, 0, 0,
+        win32gui.SetWindowPos(found_hwnd, win32con.HWND_NOTOPMOST, 0, 0, 0, 0,
                               win32con.SWP_NOMOVE | win32con.SWP_NOSIZE)
-        print("已将 Notion 窗口置于前台。")
+        print("✅ 已将 Notion 窗口置于前台。")
     else:
-        print("未找到 Notion 主窗口。")
+        print("⚠️ 未找到 Notion 主窗口。")
 
 
 def log_event(event_name: event_type, vol: int=0):
@@ -92,3 +101,21 @@ def log_event(event_name: event_type, vol: int=0):
     if(response['object']!= "error"): 
         return True
     else: return False
+
+
+
+def list_visible_windows():
+    def callback(hwnd, _):
+        if win32gui.IsWindowVisible(hwnd):
+            title = win32gui.GetWindowText(hwnd)
+            if title.strip():
+                try:
+                    _, pid = win32process.GetWindowThreadProcessId(hwnd)
+                    proc = psutil.Process(pid)
+                    if(proc.name()=="Notion.exe"):
+                        print(f"[窗口标题] {title} | [进程名] {proc.name()} | hwnd: {hwnd}")
+                except Exception as e:
+                    print(f"无法获取进程信息: {e}")
+        return True
+    win32gui.EnumWindows(callback, None)
+
