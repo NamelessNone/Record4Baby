@@ -20,6 +20,7 @@ class event_type(Enum):
     walk="遛"
     diaper="纸尿裤"
     pad="隔尿垫"
+    weight="体重"
 
 
 def load_config(filename="config.toml"):
@@ -86,7 +87,7 @@ def log_event(event_name: event_type, vol: int=0):
                 "date": { "start": now , "time_zone": "Asia/Shanghai"}
             }
     }
-    if event_name is event_type.bottle:
+    if event_name is event_type.bottle or event_type.weight:
         build_prop["Volume"]={
                 "type": "number",
                 "number": vol
