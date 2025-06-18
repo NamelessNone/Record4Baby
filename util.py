@@ -87,7 +87,7 @@ def log_event(event_name: event_type, vol: int=0):
                 "date": { "start": now , "time_zone": "Asia/Shanghai"}
             }
     }
-    if event_name is event_type.bottle or event_type.weight:
+    if (event_name is event_type.bottle) or (event_name is event_type.weight):
         build_prop["Volume"]={
                 "type": "number",
                 "number": vol
