@@ -5,4 +5,4 @@ sys.path.append(SCRIPT_DIR)
 import util
 
 if __name__ == "__main__":
-    util.log_event(util.event_type.bottle, 130)
+    util.log_event(util.event_type.bottle, 150)
